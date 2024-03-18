@@ -31,22 +31,22 @@ cursor.execute("USE jogoteca")
 TABLES = {}
 
 TABLES['Jogos'] = ('''
-    CREATE TABLE `jogoteca`.`jogos` (
-      `id` INT NOT NULL AUTO_INCREMENT,
-      `nome` VARCHAR(50) NOT NULL,
-      `categoria` VARCHAR(40) NOT NULL,
-      `console` VARCHAR(20) NOT NULL,
-      PRIMARY KEY (`id`))
+    CREATE TABLE jogoteca.jogos (
+      id INT NOT NULL AUTO_INCREMENT,
+      nome VARCHAR(50) NOT NULL,
+      categoria VARCHAR(40) NOT NULL,
+      console VARCHAR(20) NOT NULL,
+      PRIMARY KEY (id))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8
     COLLATE = utf8_bin; ''')
 
 TABLES['Usuarios'] = ('''
-    CREATE TABLE `jogoteca`.`usuarios` (      
-      `nome` VARCHAR(50) NOT NULL,
-      `nickname` VARCHAR(10) NOT NULL,
-      `senha` VARCHAR(100) NOT NULL,
-      PRIMARY KEY (`nickname`))
+    CREATE TABLE jogoteca.usuarios (      
+      nome VARCHAR(50) NOT NULL,
+      nickname VARCHAR(10) NOT NULL,
+      senha VARCHAR(100) NOT NULL,
+      PRIMARY KEY (nickname))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8
     COLLATE = utf8_bin;  ''')

@@ -1,5 +1,13 @@
 import os 
 from jogoteca import app
+from flask_wtf import FlaskForm
+from wtforms import SearchField, SubmitField, validators
+
+class FormularioJogo(FlaskForm):
+    nome = SearchField("Nome do Jogo", [validators.DataRequired(), validators.Length(min=1, max=50)])
+    categoria = SearchField("Categpria", [validators.DataRequired(), validators.Length(min=1, max=40)])
+    console = SearchField("Console", [validators.DataRequired(), validators.Length(min=1, max=20)])
+    salvar = SubmitField("Salvar")
 
 def recupera_imagem(id):
     for nome_arquivo in os.listdir(app.config["UPLOAD_PATH"]):
