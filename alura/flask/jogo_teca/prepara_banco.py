@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import errorcode
+from flask_bcrypt import generate_password_hash
 import os
 
 print('Conectando...')
@@ -16,8 +17,6 @@ except mysql.connector.Error as err:
         print('Existe algo errado no nome de usuário ou senha')
     else:
         print(err)
-else:
-    print('Conectado')
 
 cursor = conn.cursor()
 
@@ -68,10 +67,10 @@ for tabela_nome in TABLES:
 usuario_sql = 'INSERT INTO usuarios (nome, nickname, senha) values (%s,%s,%s)'
 
 usuarios = [
-    ("Bruno Divino", "BD", "alohomora"),
-    ("Joao Paulo", "JP", "123"),
-    ("Luisandro", "L", "123"),
-    ("Dogão", "DOG", "321"),
+    ("Bruno Divino", "BD", generate_password_hash("alohomora").decode("utf-8")),
+    ("Joao Paulo", "JP", generate_password_hash("123").decode("utf-8")),
+    ("Luisandro", "L", generate_password_hash("123").decode("utf-8")),
+    ("Dogão", "DOG", generate_password_hash("321").decode("utf-8")),
 ]
 
 cursor.executemany(usuario_sql,usuarios)

@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory
 from jogoteca import app, db
-from models import Jogos, Usuarios
+from models import Jogos
 from helpers import recupera_imagem, deleta_arquivo, FormularioJogo
 import time
 
@@ -9,14 +9,12 @@ def index():
     lista = Jogos.query.order_by(Jogos.id)
     return render_template("lista.html", titulo="Jogos", jogos=lista)
 
-
 @app.route("/novo")
 def novo():
     if "usuario_logado" not in session or session["usuario_logado"] == None:
         return redirect(url_for("login", proxima=url_for("novo")))
     form = FormularioJogo()
     return render_template("novo.html", titulo="Novo Jogo", form=form)
-
 
 @app.route("/criar", methods=["POST",])
 def criar():
@@ -28,8 +26,8 @@ def criar():
     nome = form.nome.data
     categoria = form.categoria.data
     console = form.console.data
-   
     jogo = Jogos.query.filter_by(nome=nome).first()
+
     if jogo:
         flash("Jogo já existente!")
         return redirect(url_for("index"))
@@ -48,7 +46,7 @@ def criar():
 @app.route("/editar/<int:id>")
 def editar(id):
     if "usuario_logado" not in session or session["usuario_logado"] == None:
-        return redirect(url_for("login", proxima=url_for("editar")))
+        return redirect(url_for("login", proxima=url_for("editar", id=id)))
     jogo = Jogos.query.filter_by(id=id).first()
     form = FormularioJogo()
     form.nome.data = jogo.nome
@@ -87,41 +85,6 @@ def deletar(id):
     db.session.commit()
     flash("Jogo deletado com sucesso!")
 
-    return redirect(url_for("index"))
-
-    
-@app.route("/login")
-def login():
-    proxima = request.args.get("proxima")
-    return render_template("login.html", proxima=proxima)
-
-
-@app.route("/autenticar", methods=["POST",])
-def autenticar():
-    usuario = Usuarios.query.filter_by(nickname=request.form["usuario"]).first()
-    if usuario:
-        if request.form["senha"] == usuario.senha:
-            session["usuario_logado"] = usuario.nickname
-            flash(usuario.nickname + " logado com sucesso!")
-            proxima_page = request.form["proxima"]
-            if proxima_page != None:
-                return redirect(proxima_page)
-            else:
-                return redirect("/")
-        
-        else:
-            flash("Usuário não logado")
-            return redirect(url_for("login"))
-
-    else:
-        flash("Usuário não logado")
-        return redirect(url_for("login"))
-
-
-@app.route("/logout")
-def logout():
-    session["usuario_logado"] = None
-    flash("Logout efetuado com sucesso!")
     return redirect(url_for("index"))
 
 @app.route("/uploads/<nome_arquivo>")
