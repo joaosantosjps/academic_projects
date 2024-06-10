@@ -105,3 +105,4 @@ conn.commit()
 
 cursor.close()
 conn.close()
+print(mysql.connector.__version__)
