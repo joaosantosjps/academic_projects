@@ -103,9 +103,9 @@ for jogo in cursor.fetchall():
 conn.commit()
 
 cursor.close()
-<<<<<<< HEAD
+#<<<<<<< HEAD
 conn.close()
 print(mysql.connector.__version__)
-=======
+#=======
 conn.close()
->>>>>>> e65f5a7d8f9b4187e93ca34221b7c0e60e979454
+#>>>>>>> e65f5a7d8f9b4187e93ca34221b7c0e60e979454
