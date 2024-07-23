@@ -52,7 +52,7 @@ class Dados:
         new_dados = []
 
         for old_dict in self.dados:
-            dict_temp ={}
+            dict_temp = {}
 
             for old_key, value in old_dict.items():
                 dict_temp[key_mapping[old_key]] = value
