@@ -11,6 +11,8 @@ from airflow.models import BaseOperator, DAG, TaskInstance
 
 class TwitterOperator(BaseOperator):
 
+    tamplete_fields = ["query", "file_path", "start_time", "end_time"]
+
     def __init__(self, file_path, end_time, start_time, query, **kwargs):
         self.end_time = end_time
         self.start_time = start_time
