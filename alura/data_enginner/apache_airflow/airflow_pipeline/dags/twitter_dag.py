@@ -1,23 +1,39 @@
 import sys
+
 sys.path.append("airflow_pipeline")
 
 from airflow.models import DAG
+from airflow.utils.dates import days_ago
+from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+
 from datetime import datetime, timedelta
 from operators.twitter_operator import TwitterOperator
 
 from os.path import join
-from airflow.utils.dates import days_ago
 from pathlib import Path
 
-with DAG(dag_id = "TwitterDAG", start_date=days_ago(6), schedule_interval="@daily") as dag:
+with DAG(
+    dag_id="TwitterDAG", start_date=days_ago(6), schedule_interval="@daily"
+) as dag:
     TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S.00Z"
     query = "datascience"
 
-    twitter_operator = TwitterOperator(file_path=join("datalake/twitter_datascience/extract_date={{ data_interval_start.strftime('%Y-%m-%d') }}",
-                                        "datascience_{{ ds_nodash }}.json"),
-                                        query=query,
-                                        start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
-                                        end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
-                                        task_id="twitter_datascience")
+    twitter_operator = TwitterOperator(
+        file_path=join(
+            "datalake/twitter_datascience/extract_date={{ data_interval_start.strftime('%Y-%m-%d') }}",
+            "datascience_{{ ds_nodash }}.json",
+        ),
+        query=query,
+        start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
+        end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
+        task_id="twitter_datascience",
+    )
 
-twitter_operator
+    twitter_transform = SparkSubmitOperator(task_id="transform_twitter_datascience", 
+    application="/home/joao-santos/Desktop/academic_projects/alura/data_enginner/apache_airflow/src/spark/transformation.py",
+    name="twitter_transformation",
+    application_args=["--src","/home/joao-santos/Desktop/academic_projects/alura/data_enginner/apache_airflow/datalake/twitter_datascience",
+    "--dest", "/home/joao-santos/Desktop/academic_projects/alura/data_enginner/apache_airflow/airflow_pipeline/dados_transformation",
+    "--process-date", "{{ data_interval_start.strftime('%Y-%m-%d') }}"])
+
+twitter_operator >> twitter_transform
