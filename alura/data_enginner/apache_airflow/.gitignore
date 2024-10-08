@@ -3,5 +3,4 @@ airflow.db
 *.json
 spark-3.1.3-bin-hadoop3.2.tgz
 spark-3.1.3-bin-hadoop3.2
-bronze
-silver
+*twitter_datascience

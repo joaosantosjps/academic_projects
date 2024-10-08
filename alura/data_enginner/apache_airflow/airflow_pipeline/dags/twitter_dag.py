@@ -41,7 +41,14 @@ with DAG(
         application="/home/joao-santos/Desktop/academic_projects/alura/data_enginner/apache_airflow/src/spark/transformation.py",
         name="twitter_transformation",
         application_args=["--src",BASE_FOLDER.format(stage="Bronze", partition=PARTITION_FOLDER_EXTRACT),
-        "--dest", BASE_FOLDER.format(stage="Silver", partition=""),
-        "--process-date", "{{ ds }}"])
+            "--dest", BASE_FOLDER.format(stage="Silver", partition=""),
+            "--process-date", "{{ ds }}"])
+    
+    twitter_insight = SparkSubmitOperator(task_id="insight_twitter",
+        application="/home/aluno/Documents/curso2/src/spark/insight_tweet.py",
+        name="insight_twitter",
+        application_args=["--src", BASE_FOLDER.format(stage="Silver", partition=""),
+            "--dest", BASE_FOLDER.format(stage="Gold", partition=""),
+            "--process-date", "{{ ds }}"])
 
-twitter_operator >> twitter_transform
+twitter_operator >> twitter_transform >> twitter_insight
