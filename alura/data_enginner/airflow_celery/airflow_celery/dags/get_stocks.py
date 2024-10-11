@@ -30,7 +30,7 @@ def get_history(ticker, ds=None, ds_nodash=None):
 
 @dag(
     schedule_interval="0 0 * * 2-6",
-    start_date=pendulum.datetime(2024, 1, 1, tz="UTC"),
+    start_date=pendulum.datetime(2024, 2, 1, tz="UTC"),
     catchup=True
 )
 
